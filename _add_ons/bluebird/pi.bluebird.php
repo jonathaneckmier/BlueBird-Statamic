@@ -24,6 +24,7 @@ class Plugin_bluebird extends Plugin {
 		$include_rts  = $this->fetchParam('include_rts', true);
 		$include_entities  = $this->fetchParam('include_entities', true);
 		$exclude_replies  = $this->fetchParam('exclude_replies', false);
+		$open_urls_new_window = $this->fetchParam('open_urls_new_window', false);
 
 		$cache_length = $this->fetchParam('cache', 60); // Cache time in seconds
 
@@ -139,19 +140,40 @@ class Plugin_bluebird extends Plugin {
 
 					foreach ($entityUrl as $url) {
 						$find = $url['url'];
-						$replace = '<a href="'.$find.'">'.$url['display_url'].'</a>';
+						
+						if ($open_urls_new_window) {
+							$replace = '<a href="'.$find.'" target="_blank">'.$url['display_url'].'</a>';
+						}
+						else {
+							$replace = '<a href="'.$find.'">'.$url['display_url'].'</a>';
+						}
+						
 						$tweetText = str_replace($find, $replace, $tweetText);
 					}
 
 					foreach ($entityHash as $hashtag) {
 						$find = '#'.$hashtag['text'];
-						$replace = '<a href="https://twitter.com/#!/search/%23'.$hashtag['text'].'">'.$find.'</a>';
+						
+						if ($open_urls_new_window) {
+							$replace = '<a href="https://twitter.com/#!/search/%23'.$hashtag['text'].'" target="_blank">'.$find.'</a>';
+						}
+						else {
+							$replace = '<a href="https://twitter.com/#!/search/%23'.$hashtag['text'].'">'.$find.'</a>';
+						}
+						
 						$tweetText = str_replace($find, $replace, $tweetText);
 					}
 
 					foreach ($entityUser as $user_mention) {
 						$find = "@".$user_mention['screen_name'];
-						$replace = '<a href="https://twitter.com/'.$user_mention['screen_name'].'">'.$find.'</a>';
+						
+						if ($open_urls_new_window) {
+							$replace = '<a href="https://twitter.com/'.$user_mention['screen_name'].'" target="_blank">'.$find.'</a>';
+						}
+						else {
+							$replace = '<a href="https://twitter.com/'.$user_mention['screen_name'].'">'.$find.'</a>';
+						}
+						
 						$tweetText = str_replace($find, $replace, $tweetText);
 					}
 
@@ -160,7 +182,14 @@ class Plugin_bluebird extends Plugin {
 				if (!empty($tweet['entities']['media'])) {
 					foreach ($tweet['entities']['media'] as $media) {
 						$find = $media['url'];
-						$replace = '<a href="'.$media['url'].'">'.$media['display_url'].'</a>';
+						
+						if ($open_urls_new_window) {
+							$replace = '<a href="'.$media['url'].'" target="_blank">'.$media['display_url'].'</a>';
+						}
+						else {
+							$replace = '<a href="'.$media['url'].'">'.$media['display_url'].'</a>';
+						}
+						
 						$tweetText = str_replace($find, $replace, $tweetText);
 					}
 				}
